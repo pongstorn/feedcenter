@@ -16,8 +16,6 @@
  BSD license, check license.txt for more information
  All text above, and the splash screen below must be
  included in any redistribution.
- DOIT ESP32 DEVKIT V1
-
  **************************************************************************/
 #include <SPI.h>
 #include <Wire.h>
@@ -32,6 +30,10 @@
 
 
 WiFiMulti wifiMulti;
+
+#ifndef LED_BUILTIN
+#define LED_BUILTIN 13 // pin number is specific to your esp32 board
+#endif
 
 #define WiFi_timeout 15000  // 15sec Wifi connection timeout
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -65,12 +67,12 @@ NRF24_GND   x   ESP32_GND
 #define WIFI_SSID0 "neptune"
 #define WIFI_PASS0 "1010101010"
 #define WIFI_SSID1 "mars"
-#define WIFI_PASS1 "inn0v@t10n"
+#define WIFI_PASS1 "1nn0v@t10n"
 #define WIFI_SSID2 "KK04"
 #define WIFI_PASS2 "22224444"
 
 #define EEPROM_MAX_ADDR 512
-
+#define LED 2
 String HTTPDATA;
 
 const char* fingerprint = "39 C7 07 19 7A E8 4E 67 6C 8A B1 D7 ED 00 74 11 5F 4E 9C BE";   //*.cpf.co.th
@@ -135,10 +137,21 @@ static const unsigned char PROGMEM logo_bmp[] =
   0b00000000, 0b00110000 };
 
 void setup() {
-  Serial.begin(115200);
   pinMode(SHDN, OUTPUT);
+  pinMode(LED,OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(SHDN, HIGH);
-  delay(2000);
+  delay(4000);
+  Serial.begin(115200);
+
+  delay(500);
+  digitalWrite(LED,HIGH);
+  delay(500);
+  digitalWrite(LED,LOW);
+  delay(500);
+  digitalWrite(LED,HIGH);
+  delay(500);
+  digitalWrite(LED,LOW);
   
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
